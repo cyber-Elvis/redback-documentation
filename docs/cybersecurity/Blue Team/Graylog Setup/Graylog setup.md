@@ -1,9 +1,13 @@
+---
+sidebar_position: 1
+---
+:::info
+Document Creation: 2025-04-9. Last Edited: 2025-04-26. Authors: Elvis Nwosu
+
+Document Code: Graylog_Setup_V1. Effective Date: 2025-04-26. Expiry Date: 2026-04-26
+:::
 
 # Graylog Setup and TLS Integration Report
-
-**Author:** Elvis Ifeanyi Nwosu   
-**Date:** 9 April, 2025
-
 
 
 ## Background
@@ -92,14 +96,14 @@ openssl s_client -connect capstone.node-1:9200 -CAfile /etc/wazuh-indexer/certs/
 ### 2.4 Truststore Import
 ```bash
 cp /usr/share/graylog-server/jvm/lib/security/cacerts /etc/graylog/server/certs/cacerts
-keytool -importcert -keystore /etc/graylog/server/certs/cacerts   -storepass changeit -alias root_ca   -file /etc/wazuh-indexer/certs/root-ca.pem
+keytool -importcert -keystore /etc/graylog/server/certs/cacerts   -storepass <password> -alias root_ca   -file /etc/wazuh-indexer/certs/root-ca.pem
 ```
 
 ### 2.5 JVM Truststore Activation
 Added the following options in `/etc/default/graylog-server`:
 ```bash
 -Djavax.net.ssl.trustStore=/etc/graylog/server/certs/cacerts
--Djavax.net.ssl.trustStorePassword=changeit
+-Djavax.net.ssl.trustStorePassword=<password>
 ```
 
 **Screenshot of JVM Truststore Import Success**
@@ -121,18 +125,18 @@ curl -vk https://capstone.node-1:9200
 
 Updated `/etc/graylog/server/server.conf`:
 ```ini
-elasticsearch_hosts = https://graylog:admin@capstone.node-1:9200
+elasticsearch_hosts = https://<userame>:<password>@capstone.node-1:9200
 elasticsearch_tls_verify = true
 transport_tls_trust_store_path = /etc/graylog/server/certs/cacerts
-transport_tls_trust_store_password = changeit
+transport_tls_trust_store_password = <password>
 ```
 
 ### 3.1 Secure Alternative Format
 Instead of embedding credentials in the URL, use the secure format:
 ```ini
 elasticsearch_hosts = https://capstone.node-1:9200
-elasticsearch_username = graylog
-elasticsearch_password = admin
+elasticsearch_username = <username>
+elasticsearch_password = <password>
 ```
 
 ---
