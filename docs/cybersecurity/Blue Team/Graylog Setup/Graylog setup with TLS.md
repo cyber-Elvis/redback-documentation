@@ -1,14 +1,14 @@
 ---
 sidebar_position: 1
 ---
-:::info
-Document Creation: 2025-04-9. Last Edited: 2025-04-26. Authors: Elvis Nwosu
 
-Document Code: Graylog_Setup_V1. Effective Date: 2025-04-26. Expiry Date: 2026-04-26
-:::
 
 # Graylog Setup and TLS Integration Report
+:::info
+Document Creation: 2025-04-9. Last Edited: 2025-05-08. Authors: Elvis Nwosu
 
+Document Code: Graylog_Setup_V1. Effective Date: 2025-05-08. Expiry Date: 2026-05-08
+:::
 
 ## Background
 Graylog is a centralized log management and analysis platform designed to help IT and security teams collect, normalize, and analyze large volumes of log data from distributed systems. With the increasing complexity of IT infrastructures and growing cybersecurity threats, centralized logging is essential for detecting anomalies, auditing system activity, and investigating security incidents in real-time.
@@ -95,11 +95,35 @@ openssl s_client -connect capstone.node-1:9200 -CAfile /etc/wazuh-indexer/certs/
 
 ### 2.4 Truststore Import
 ```bash
-cp /usr/share/graylog-server/jvm/lib/security/cacerts /etc/graylog/server/certs/cacerts
+cp -a /usr/lib/jvm/java-17-openjdk-amd64/lib/security/cacerts /etc/graylog/server/certs/cacerts
 keytool -importcert -keystore /etc/graylog/server/certs/cacerts   -storepass <password> -alias root_ca   -file /etc/wazuh-indexer/certs/root-ca.pem
 ```
 
-### 2.5 JVM Truststore Activation
+### 2.5 Graylog Configuration/JVM Truststore Activation
+
+Edited the configuration file located at /etc/graylog/server/server.conf by generating and adding the password secret and root password using the following commands:
+
+Password secret generation:
+```bash
+pwgen -N 1 -s 96
+```
+Root password generation:
+```bash
+echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut -d" " -f1
+```
+
+Created the internal User on Wazuh, assigning it a chosen backend role using the following command:
+```bash
+curl -k -u '<username:<password>' \
+  -XPUT "https://192.168.56.109:9200/_plugins/_security/api/internalusers/$GRAYLOG_USER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "password": "<password>",
+    "backend_roles": ["admin"],
+    "attributes": {}
+  }'
+```
+
 Added the following options in `/etc/default/graylog-server`:
 ```bash
 -Djavax.net.ssl.trustStore=/etc/graylog/server/certs/cacerts
@@ -159,4 +183,13 @@ elasticsearch_password = <password>
   - `/etc/graylog/server/server.conf`
   - `/etc/default/graylog-server`
   - `/etc/graylog/server/certs/cacerts`
+
+## Video Tutorial
+
+<iframe width="560" height="315" 
+  src="https://www.youtube.com/embed/NfL24OvJXdg" 
+  title="YouTube video player" frameborder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+  allowfullscreen>
+</iframe>
 

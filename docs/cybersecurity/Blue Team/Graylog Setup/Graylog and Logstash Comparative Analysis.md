@@ -1,14 +1,14 @@
 ---
 sidebar_position: 2
 ---
-
-
-## Graylog vs Logstash: A Comparative Analysis
 :::info
 Document Creation: 2025-04-9. Last Edited: 2025-04-26. Authors: Elvis Nwosu
 
 Document Code: Graylog_vs_Logstach_V1. Effective Date: 2025-04-26. Expiry Date: 2026-04-26
 :::
+
+
+## Graylog vs Logstash: A Comparative Analysis
 
 ### 1.0 Introduction 
 

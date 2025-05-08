@@ -1,5 +1,5 @@
 {
-  "label": "Wazuh",
+  "label": "Wazuh - MISP Integration",
   "position": 12,
   "link": {
     "type": "generated-index",
